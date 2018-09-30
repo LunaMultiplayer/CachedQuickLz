@@ -12,7 +12,7 @@
 
 ---
 
-# Cached compression/decompression with [QuickLz](http://www.quicklz.com/) algorithm
+# Cached compression/decompression with [QuickLz](http://www.quicklz.com/)
 
 *Allows you to compress and decompress with [QuickLz](http://www.quicklz.com/) while keeping low the GC*  
 
