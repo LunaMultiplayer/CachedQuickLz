@@ -21,6 +21,37 @@
 - Fast compression/decompression by using the [QuickLz](http://www.quicklz.com/) algorithm
 - Uses an array pool to reuse the arrays
 
+### Usage:
+
+##### Compress:
+```CSharp
+var length = 5000;
+var data = new byte[length]
+//Fill up the "data" array...
+CachedQlz.Compress(ref data, ref length);
+//Now "data" is an array with the compressed bytes. If you want to check it's length use the variable "length"
+//Do NOT use data.Length! It might be bigger as it came from a cached array!
+```
+
+##### Decompress:
+```CSharp
+//"data" is an array with compressed bytes...
+CachedQlz.Decompress(ref data, out var decompressedLength);
+//Now "data" is an array with the decompressed bytes. If you want to check it's length use the variable "length"
+//Do NOT use data.Length! It might be bigger as it came from a cached array!
+```
+
+##### Request an array from the pool:
+```CSharp
+var array = ArrayPool<byte>.Spawn(4);
+//Caution, array.Length will 8 instead of 4 as the cache system uses values based on powers of two
+```
+
+##### Return an array to the pool:
+```CSharp
+ArrayPool<byte>.Recycle(array);
+```
+
 ---
 
 ### Status:
