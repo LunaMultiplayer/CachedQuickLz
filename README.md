@@ -1,13 +1,13 @@
 <p align="center">
-  <a href="https://paypal.me/gavazquez"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal"/></a>
-  <a href="https://discord.gg/S6bQR5q"><img src="https://img.shields.io/discord/378456662392045571.svg" alt="Chat on discord"/></a>
+  <a href="https://paypal.me/gavazquez"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg?style=flat&logo=paypal" alt="PayPal"/></a>
+  <a href="https://discord.gg/S6bQR5q"><img src="https://img.shields.io/discord/378456662392045571.svg?style=flat&logo=discord&label=discord" alt="Chat on discord"/></a>
 </p>
 
 <p align="center">
-  <a href="https://www.nuget.org/packages/cachedquicklz"><img src="https://img.shields.io/nuget/v/cachedquicklz.svg" alt="Nuget" /></a>
-  <a href="../../releases"><img src="https://img.shields.io/github/release/lunamultiplayer/cachedquicklz.svg" alt="Latest release" /></a>
-  <a href="../../releases"><img src="https://img.shields.io/github/downloads/lunamultiplayer/cachedquicklz/total.svg" alt="Total downloads" /></a>
-  <a href="../../"><img src="https://img.shields.io/github/search/lunamultiplayer/cachedquicklz/goto.svg" alt="Total hits" /></a>
+  <a href="https://www.nuget.org/packages/cachedquicklz"><img src="https://img.shields.io/nuget/v/cachedquicklz.svg?style=flat&logo=nuget" alt="Nuget" /></a>
+  <a href="../../releases"><img src="https://img.shields.io/github/release/lunamultiplayer/cachedquicklz.svg?style=flat&logo=github&logoColor=white" alt="Latest release" /></a>
+  <a href="../../releases"><img src="https://img.shields.io/github/downloads/lunamultiplayer/cachedquicklz/total.svg?style=flat&logo=github&logoColor=white" alt="Total downloads" /></a>
+  <a href="../../"><img src="https://img.shields.io/github/search/lunamultiplayer/cachedquicklz/goto.svg?style=flat&logo=github&logoColor=white" alt="Total hits" /></a>
 </p>
 
 ---
