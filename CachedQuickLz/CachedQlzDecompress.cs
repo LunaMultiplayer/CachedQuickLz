@@ -43,6 +43,7 @@ namespace CachedQuickLz
                 ArrayPool<int>.Recycle(hashtable);
                 ArrayPool<byte>.Recycle(hashCounter);
                 ArrayPool<byte>.Recycle(data);
+
                 data = destination;
                 return;
             }

@@ -33,8 +33,15 @@ namespace CachedQuickLz
 
             if (length == 0)
             {
+                ArrayPool<byte>.Recycle(destination);
+                ArrayPool<int>.Recycle(cachetable);
+                ArrayPool<byte>.Recycle(hashCounter);
                 ArrayPool<byte>.Recycle(data);
+
+                HasthablePool.RecycleHashtable(hashtable);
+
                 data = new byte[0];
+                return;
             }
 
             if (src <= lastMatchstart)
@@ -46,7 +53,7 @@ namespace CachedQuickLz
                 {
                     if (src > length >> 1 && dst > src - (src >> 5))
                     {
-                        length = length + QlzConstants.DefaultHeaderlen;
+                        var newLength = length + QlzConstants.DefaultHeaderlen;
                         d2 = ArrayPool<byte>.Spawn(length + QlzConstants.DefaultHeaderlen);
                         WriteHeader(d2, level, false, length, length + QlzConstants.DefaultHeaderlen);
                         Array.Copy(data, 0, d2, QlzConstants.DefaultHeaderlen, length);
@@ -54,10 +61,11 @@ namespace CachedQuickLz
                         ArrayPool<byte>.Recycle(destination);
                         ArrayPool<int>.Recycle(cachetable);
                         ArrayPool<byte>.Recycle(hashCounter);
+                        ArrayPool<byte>.Recycle(data);
                         HasthablePool.RecycleHashtable(hashtable);
 
-                        ArrayPool<byte>.Recycle(data);
                         data = d2;
+                        length = newLength;
                         return;
                     }
 
@@ -239,15 +247,14 @@ namespace CachedQuickLz
             Fastwrite(destination, cwordPtr, (int)((cwordVal >> 1) | 0x80000000), QlzConstants.CwordLen);
             WriteHeader(destination, level, true, length, dst);
 
+            ArrayPool<int>.Recycle(cachetable);
+            ArrayPool<byte>.Recycle(hashCounter);
+            HasthablePool.RecycleHashtable(hashtable);
             ArrayPool<byte>.Recycle(data);
 
             d2 = ArrayPool<byte>.Spawn(dst);
             Array.Copy(destination, d2, dst);
-
             ArrayPool<byte>.Recycle(destination);
-            ArrayPool<int>.Recycle(cachetable);
-            ArrayPool<byte>.Recycle(hashCounter);
-            HasthablePool.RecycleHashtable(hashtable);
 
             length = dst;
             data = d2;

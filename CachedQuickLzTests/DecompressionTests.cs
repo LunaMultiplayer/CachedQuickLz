@@ -11,7 +11,7 @@ namespace CachedQuickLzTests
         [TestMethod]
         public void DecompressData_ImpossibleToCompress()
         {
-            var originalLength = 10;
+            var originalLength = 100;
             var numBytes = originalLength;
 
             var data = new byte[numBytes];
