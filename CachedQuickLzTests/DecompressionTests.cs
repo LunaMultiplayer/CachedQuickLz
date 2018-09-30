@@ -18,10 +18,29 @@ namespace CachedQuickLzTests
         }
 
         [TestMethod]
-        public void DecompressData()
+        public void DecompressData_ImpossibleToCompress()
+        {
+            var data = new byte[5000];
+            new Random().NextBytes(data);
+            var compressedData = CachedQlz.Compress(data, data.Length, out _);
+
+            var decompressedData = CachedQlz.Decompress(compressedData, out var decompressedLength);
+            Assert.AreEqual(data.Length, decompressedLength);
+
+            var sequenceEqual = true;
+            for (var i = 0; i < data.Length; i++)
+            {
+                sequenceEqual &= data[i] == decompressedData[i];
+            }
+
+            Assert.IsTrue(sequenceEqual);
+        }
+
+        [TestMethod]
+        public void DecompressData_NoIssues()
         {
             var text = Encoding.ASCII.GetBytes(RandomString(5000));
-            var compressedText = CachedQlz.Compress(text, text.Length, out var compressedLength);
+            var compressedText = CachedQlz.Compress(text, text.Length, out _);
 
             var decompressedText = CachedQlz.Decompress(compressedText, out var decompressedLength);
             Assert.AreEqual(text.Length, decompressedLength);

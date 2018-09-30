@@ -1,29 +1,21 @@
-﻿// QuickLZ data compression library
-// Copyright (C) 2006-2011 Lasse Mikkel Reinhold
-// lar@quicklz.com
-//
-// QuickLZ can be used for free under the GPL 1, 2 or 3 license (where anything 
-// released into public must be open source) or under a commercial license if such 
-// has been acquired (see http://www.quicklz.com/order.html). The commercial license 
-// does not cover derived or ported versions created by third parties under GPL.
-//
-// Only a subset of the C library has been ported, namely level 1 and 3 not in 
-// streaming mode. 
-//
-// Version: 1.5.0 final
-
-using System;
+﻿using System;
 
 namespace CachedQuickLz
 {
     public static partial class CachedQlz
     {
-        public static byte[] Decompress(byte[] source, out int length)
+        /// <summary>
+        /// Decompresses the given array
+        /// </summary>
+        /// <param name="source">Array with compressed data</param>
+        /// <param name="decompressedDataLength">Decompressed data length</param>
+        /// <returns>A random sized array with the data decompressed</returns>
+        public static byte[] Decompress(byte[] source, out int decompressedDataLength)
         {
             //When decompressing an empty array, return the original empty array.  Otherwise, we'll fail trying to access source[0] later.
             if (source.Length == 0)
             {
-                length = 0;
+                decompressedDataLength = 0;
                 return source;
             }
 
@@ -33,20 +25,20 @@ namespace CachedQuickLz
                 throw new ArgumentException("C# version only supports level 1 and 3");
             }
 
-            length = SizeDecompressed(source);
+            decompressedDataLength = SizeDecompressed(source);
             var src = HeaderLen(source);
             var dst = 0;
             uint cwordVal = 1;
-            var destination = ArrayPool<byte>.Spawn(length);
+            var destination = ArrayPool<byte>.Spawn(decompressedDataLength);
             var hashtable = ArrayPool<int>.Spawn(4096);
             var hashCounter = ArrayPool<byte>.Spawn(4096);
-            var lastMatchstart = length - QlzConstants.UnconditionalMatchlen - QlzConstants.UncompressedEnd - 1;
+            var lastMatchstart = decompressedDataLength - QlzConstants.UnconditionalMatchlen - QlzConstants.UncompressedEnd - 1;
             var lastHashed = -1;
             uint fetch = 0;
 
             if ((source[0] & 1) != 1)
             {
-                Array.Copy(source, HeaderLen(source), destination, 0, length);
+                Array.Copy(source, HeaderLen(source), destination, 0, decompressedDataLength);
                 ArrayPool<int>.Recycle(hashtable);
                 ArrayPool<byte>.Recycle(hashCounter);
                 return destination;
@@ -185,7 +177,7 @@ namespace CachedQuickLz
                     }
                     else
                     {
-                        while (dst <= length - 1)
+                        while (dst <= decompressedDataLength - 1)
                         {
                             if (cwordVal == 1)
                             {

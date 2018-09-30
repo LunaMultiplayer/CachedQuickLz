@@ -1,29 +1,23 @@
-﻿// QuickLZ data compression library
-// Copyright (C) 2006-2011 Lasse Mikkel Reinhold
-// lar@quicklz.com
-//
-// QuickLZ can be used for free under the GPL 1, 2 or 3 license (where anything 
-// released into public must be open source) or under a commercial license if such 
-// has been acquired (see http://www.quicklz.com/order.html). The commercial license 
-// does not cover derived or ported versions created by third parties under GPL.
-//
-// Only a subset of the C library has been ported, namely level 1 and 3 not in 
-// streaming mode. 
-//
-// Version: 1.5.0 final
-
-using System;
+﻿using System;
 
 namespace CachedQuickLz
 {
     public static partial class CachedQlz
     {
-        public static byte[] Compress(byte[] source, int numBytes, out int length, int level = 3)
+        /// <summary>
+        /// Compress the given array
+        /// </summary>
+        /// <param name="source">Source array to compress</param>
+        /// <param name="numBytes">Length of the source array</param>
+        /// <param name="compressedDataLength">Compressed data length</param>
+        /// <param name="level">Compression level. 1 = faster but less ratio. 3 = slower but higher ratio</param>
+        /// <returns>A random sized array with the data compressed</returns>
+        public static byte[] Compress(byte[] source, int numBytes, out int compressedDataLength, int level = 3)
         {
             if (level != 1 && level != 3)
                 throw new ArgumentException("C# version only supports level 1 and 3");
 
-            length = 0;
+            compressedDataLength = 0;
 
             var src = 0;
             var dst = QlzConstants.DefaultHeaderlen + QlzConstants.CwordLen;
@@ -51,6 +45,7 @@ namespace CachedQuickLz
                 {
                     if (src > numBytes >> 1 && dst > src - (src >> 5))
                     {
+                        compressedDataLength = numBytes + QlzConstants.DefaultHeaderlen;
                         d2 = ArrayPool<byte>.Spawn(numBytes + QlzConstants.DefaultHeaderlen);
                         WriteHeader(d2, level, false, numBytes, numBytes + QlzConstants.DefaultHeaderlen);
                         Array.Copy(source, 0, d2, QlzConstants.DefaultHeaderlen, numBytes);
@@ -248,7 +243,7 @@ namespace CachedQuickLz
             ArrayPool<byte>.Recycle(hashCounter);
             ArrayPoolBase.RecycleHashtable(hashtable);
 
-            length = dst;
+            compressedDataLength = dst;
             return d2;
         }
     }

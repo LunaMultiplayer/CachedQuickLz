@@ -1,29 +1,14 @@
-﻿// QuickLZ data compression library
-// Copyright (C) 2006-2011 Lasse Mikkel Reinhold
-// lar@quicklz.com
-//
-// QuickLZ can be used for free under the GPL 1, 2 or 3 license (where anything 
-// released into public must be open source) or under a commercial license if such 
-// has been acquired (see http://www.quicklz.com/order.html). The commercial license 
-// does not cover derived or ported versions created by third parties under GPL.
-//
-// Only a subset of the C library has been ported, namely level 1 and 3 not in 
-// streaming mode. 
-//
-// Version: 1.5.0 final
-
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace CachedQuickLz
 {
     public static partial class CachedQlz
     {
-        private static int HeaderLen(IList<byte> source)
-        {
-            return (source[0] & 2) == 2 ? 9 : 3;
-        }
-
+        /// <summary>
+        /// Returns the decompressed size of the given compressed array
+        /// </summary>
+        /// <param name="source">Array with compressed bytes</param>
+        /// <returns>Size of this array once it has been decompressed</returns>
         public static int SizeDecompressed(byte[] source)
         {
             if (HeaderLen(source) == 9)
@@ -32,12 +17,22 @@ namespace CachedQuickLz
             return source[2];
         }
 
+        /// <summary>
+        /// Returns the compressed size of the given compressed array
+        /// </summary>
+        /// <param name="source">Array with compressed bytes</param>
+        /// <returns>Size of this compressed array without it's header data</returns>
         public static int SizeCompressed(byte[] source)
         {
             if (HeaderLen(source) == 9)
                 return source[1] | (source[2] << 8) | (source[3] << 16) | (source[4] << 24);
 
             return source[1];
+        }
+
+        private static int HeaderLen(IList<byte> source)
+        {
+            return (source[0] & 2) == 2 ? 9 : 3;
         }
 
         private static void WriteHeader(IList<byte> dst, int level, bool compressible, int sizeCompressed, int sizeDecompressed)

@@ -46,7 +46,7 @@
     <Compile Include="CachedQlzDecompress.cs" />
     <Compile Include="CachedQlzCompress.cs" />
     <Compile Include="QlzConstants.cs" />
-    <Compile Include="CachedQlz.cs" />
+    <Compile Include="CachedQlzCommon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

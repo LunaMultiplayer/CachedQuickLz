@@ -12,13 +12,23 @@ namespace CachedQuickLzTests
         public static string RandomString(int length)
         {
             var random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string chars = "ABCDEF";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         [TestMethod]
-        public void CompressData()
+        public void CompressData_ImpossibleToCompress()
+        {
+            var data = new byte[5000];
+            new Random().NextBytes(data);
+            CachedQlz.Compress(data, data.Length, out var compressedLength);
+
+            Assert.IsTrue(data.Length <= compressedLength);
+        }
+
+        [TestMethod]
+        public void CompressData_NoIssues()
         {
             var text = Encoding.ASCII.GetBytes(RandomString(5000));
             CachedQlz.Compress(text, text.Length, out var compressedLength);
