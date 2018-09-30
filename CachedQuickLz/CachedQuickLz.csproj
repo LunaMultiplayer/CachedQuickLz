@@ -46,6 +46,7 @@
     <Compile Include="ArrayPool.cs" />
     <Compile Include="CachedQlzDecompress.cs" />
     <Compile Include="CachedQlzCompress.cs" />
+    <Compile Include="HashtablePool.cs" />
     <Compile Include="QlzConstants.cs" />
     <Compile Include="CachedQlzCommon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

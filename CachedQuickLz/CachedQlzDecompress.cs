@@ -5,57 +5,60 @@ namespace CachedQuickLz
     public static partial class CachedQlz
     {
         /// <summary>
-        /// Decompresses the given array
+        /// Decompresses the given array and return the contents into the data parameter.
+        /// Caution! As the arrays are cached the size of it might be bigger than it's contents.
+        /// Use <see cref="length"/> to check the array length
         /// </summary>
-        /// <param name="source">Array with compressed data</param>
-        /// <param name="decompressedDataLength">Decompressed data length</param>
-        /// <returns>A random sized array with the data decompressed</returns>
-        public static byte[] Decompress(byte[] source, out int decompressedDataLength)
+        /// <param name="data">Data to decompress. The results will be written into this array</param>
+        /// <param name="length">Length of the decompressed array</param>
+        public static void Decompress(ref byte[] data, out int length)
         {
             //When decompressing an empty array, return the original empty array.  Otherwise, we'll fail trying to access source[0] later.
-            if (source.Length == 0)
+            if (data.Length == 0)
             {
-                decompressedDataLength = 0;
-                return source;
+                length = 0;
+                return;
             }
 
-            var level = (source[0] >> 2) & 0x3;
+            var level = (data[0] >> 2) & 0x3;
             if (level != 1 && level != 3)
             {
                 throw new ArgumentException("C# version only supports level 1 and 3");
             }
 
-            decompressedDataLength = SizeDecompressed(source);
-            var src = HeaderLen(source);
+            length = SizeDecompressed(data);
+            var src = HeaderLen(data);
             var dst = 0;
             uint cwordVal = 1;
-            var destination = ArrayPool<byte>.Spawn(decompressedDataLength);
+            var destination = ArrayPool<byte>.Spawn(length);
             var hashtable = ArrayPool<int>.Spawn(4096);
             var hashCounter = ArrayPool<byte>.Spawn(4096);
-            var lastMatchstart = decompressedDataLength - QlzConstants.UnconditionalMatchlen - QlzConstants.UncompressedEnd - 1;
+            var lastMatchstart = length - QlzConstants.UnconditionalMatchlen - QlzConstants.UncompressedEnd - 1;
             var lastHashed = -1;
             uint fetch = 0;
 
-            if ((source[0] & 1) != 1)
+            if ((data[0] & 1) != 1)
             {
-                Array.Copy(source, HeaderLen(source), destination, 0, decompressedDataLength);
+                Array.Copy(data, HeaderLen(data), destination, 0, length);
                 ArrayPool<int>.Recycle(hashtable);
                 ArrayPool<byte>.Recycle(hashCounter);
-                return destination;
+                ArrayPool<byte>.Recycle(data);
+                data = destination;
+                return;
             }
 
             for (; ; )
             {
                 if (cwordVal == 1)
                 {
-                    cwordVal = (uint)(source[src] | (source[src + 1] << 8) | (source[src + 2] << 16) | (source[src + 3] << 24));
+                    cwordVal = (uint)(data[src] | (data[src + 1] << 8) | (data[src + 2] << 16) | (data[src + 3] << 24));
                     src += 4;
                     if (dst <= lastMatchstart)
                     {
                         if (level == 1)
-                            fetch = (uint)(source[src] | (source[src + 1] << 8) | (source[src + 2] << 16));
+                            fetch = (uint)(data[src] | (data[src + 1] << 8) | (data[src + 2] << 16));
                         else
-                            fetch = (uint)(source[src] | (source[src + 1] << 8) | (source[src + 2] << 16) | (source[src + 3] << 24));
+                            fetch = (uint)(data[src] | (data[src + 1] << 8) | (data[src + 2] << 16) | (data[src + 3] << 24));
                     }
                 }
 
@@ -79,7 +82,7 @@ namespace CachedQuickLz
                         }
                         else
                         {
-                            matchlen = source[src + 2];
+                            matchlen = data[src + 2];
                             src += 3;
                         }
                     }
@@ -141,11 +144,11 @@ namespace CachedQuickLz
                             hashCounter[hash] = 1;
                             fetch = (uint)(fetch >> 8 & 0xffff | destination[lastHashed + 3] << 16);
                         }
-                        fetch = (uint)(source[src] | (source[src + 1] << 8) | (source[src + 2] << 16));
+                        fetch = (uint)(data[src] | (data[src + 1] << 8) | (data[src + 2] << 16));
                     }
                     else
                     {
-                        fetch = (uint)(source[src] | (source[src + 1] << 8) | (source[src + 2] << 16) | (source[src + 3] << 24));
+                        fetch = (uint)(data[src] | (data[src + 1] << 8) | (data[src + 2] << 16) | (data[src + 3] << 24));
                     }
                     lastHashed = dst - 1;
                 }
@@ -153,7 +156,7 @@ namespace CachedQuickLz
                 {
                     if (dst <= lastMatchstart)
                     {
-                        destination[dst] = source[src];
+                        destination[dst] = data[src];
                         dst += 1;
                         src += 1;
                         cwordVal = cwordVal >> 1;
@@ -168,16 +171,16 @@ namespace CachedQuickLz
                                 hashtable[hash] = lastHashed;
                                 hashCounter[hash] = 1;
                             }
-                            fetch = (uint)(fetch >> 8 & 0xffff | source[src + 2] << 16);
+                            fetch = (uint)(fetch >> 8 & 0xffff | data[src + 2] << 16);
                         }
                         else
                         {
-                            fetch = (uint)(fetch >> 8 & 0xffff | source[src + 2] << 16 | source[src + 3] << 24);
+                            fetch = (uint)(fetch >> 8 & 0xffff | data[src + 2] << 16 | data[src + 3] << 24);
                         }
                     }
                     else
                     {
-                        while (dst <= decompressedDataLength - 1)
+                        while (dst <= length - 1)
                         {
                             if (cwordVal == 1)
                             {
@@ -185,7 +188,7 @@ namespace CachedQuickLz
                                 cwordVal = 0x80000000;
                             }
 
-                            destination[dst] = source[src];
+                            destination[dst] = data[src];
                             dst++;
                             src++;
                             cwordVal = cwordVal >> 1;
@@ -193,10 +196,13 @@ namespace CachedQuickLz
 
                         ArrayPool<int>.Recycle(hashtable);
                         ArrayPool<byte>.Recycle(hashCounter);
-                        return destination;
+                        break;
                     }
                 }
             }
+
+            ArrayPool<byte>.Recycle(data);
+            data = destination;
         }
     }
 }

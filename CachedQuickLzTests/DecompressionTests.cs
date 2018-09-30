@@ -11,52 +11,67 @@ namespace CachedQuickLzTests
         [TestMethod]
         public void DecompressData_ImpossibleToCompress()
         {
-            var data = new byte[5000];
-            new Random().NextBytes(data);
-            var compressedData = CachedQlz.Compress(data, data.Length, out _);
+            var originalLength = 10;
+            var numBytes = originalLength;
 
-            var decompressedData = CachedQlz.Decompress(compressedData, out var decompressedLength);
-            Assert.AreEqual(data.Length, decompressedLength);
+            var data = new byte[numBytes];
+            var dataBackup = new byte[numBytes];
+            new Random().NextBytes(data);
+            Array.Copy(data, dataBackup, numBytes);
+            
+            CachedQlz.Compress(ref data, ref numBytes);
+            CachedQlz.Decompress(ref data, out var decompressedLength);
+
+            Assert.AreEqual(originalLength, decompressedLength);
 
             var sequenceEqual = true;
-            for (var i = 0; i < data.Length; i++)
+            for (var i = 0; i < originalLength; i++)
             {
-                sequenceEqual &= data[i] == decompressedData[i];
+                sequenceEqual &= data[i] == dataBackup[i];
             }
-
             Assert.IsTrue(sequenceEqual);
         }
 
         [TestMethod]
         public void DecompressData_NoIssues()
         {
-            var text = Encoding.ASCII.GetBytes(TestCommon.RandomString(5000));
-            var compressedText = CachedQlz.Compress(text, text.Length, out _);
+            var originalLength = 5000;
+            var numBytes = originalLength;
 
-            var decompressedText = CachedQlz.Decompress(compressedText, out var decompressedLength);
-            Assert.AreEqual(text.Length, decompressedLength);
+            var text = TestCommon.RandomString(numBytes);
+            var data = Encoding.ASCII.GetBytes(text);
+            var dataBackup = new byte[numBytes];
+            Array.Copy(data, dataBackup, numBytes);
+
+            CachedQlz.Compress(ref data, ref numBytes);
+            CachedQlz.Decompress(ref data, out var decompressedLength);
+
+            Assert.AreEqual(originalLength, decompressedLength);
 
             var sequenceEqual = true;
-            for (var i = 0; i < text.Length; i++)
+            for (var i = 0; i < originalLength; i++)
             {
-                sequenceEqual &= text[i] == decompressedText[i];
+                sequenceEqual &= data[i] == dataBackup[i];
             }
-
             Assert.IsTrue(sequenceEqual);
         }
 
         [TestMethod]
         public void DecompressDataReuseArrays()
         {
-            var text = Encoding.ASCII.GetBytes(TestCommon.RandomString(4500));
-            var compressedText = CachedQlz.Compress(text, text.Length, out _);
-            CachedQlz.Decompress(compressedText, out _);
+            var numBytes = 4500;
 
-            text = Encoding.ASCII.GetBytes(TestCommon.RandomString(7500));
-            compressedText = CachedQlz.Compress(text, text.Length, out _);
+            var text = Encoding.ASCII.GetBytes(TestCommon.RandomString(numBytes));
+            CachedQlz.Compress(ref text, ref numBytes);
+            CachedQlz.Decompress(ref text, out _);
+
+            numBytes = 7500;
+
+            text = Encoding.ASCII.GetBytes(TestCommon.RandomString(numBytes));
+            CachedQlz.Compress(ref text, ref numBytes);
 
             var memBefore = GC.GetTotalMemory(true);
-            CachedQlz.Decompress(compressedText, out _);
+            CachedQlz.Decompress(ref text, out _);
             var memAfter = GC.GetTotalMemory(true);
 
             Assert.IsTrue(memAfter <= memBefore);
