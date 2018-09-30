@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/LunaMultiplayer/CachedQuickLz/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/LunaMultiplayer/CachedQuickLz</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/LunaMultiplayer/CachedQuickLz/master/External/Icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>quicklz compression decompression pool pooled allocation allocate gc garbage pooled pool</tags>
+  </metadata>
+</package>

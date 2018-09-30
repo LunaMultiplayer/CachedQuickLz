@@ -1,0 +1,14 @@
+*.user
+*.userprefs
+.idea/
+.vs/
+obj/
+TestResults/
+CachedQuickLz/*.csproj.user
+CachedQuickLz/bin/*
+CachedQuickLz/obj/*
+CachedQuickLzTests/*.csproj.user
+CachedQuickLzTests/bin/*
+CachedQuickLzTests/obj/*
+*.nupkg
+**/[Pp]ackages/*
