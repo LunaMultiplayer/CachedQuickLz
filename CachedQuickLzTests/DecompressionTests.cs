@@ -65,7 +65,7 @@ namespace CachedQuickLzTests
             CachedQlz.Compress(ref text, ref numBytes);
             CachedQlz.Decompress(ref text, out _);
 
-            numBytes = 7500;
+            numBytes = 5500;
 
             text = Encoding.ASCII.GetBytes(TestCommon.RandomString(numBytes));
             CachedQlz.Compress(ref text, ref numBytes);
