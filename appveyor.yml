@@ -47,6 +47,8 @@ build:
   parallel: true
   verbosity: minimal
   publish_nuget: true
+before_build:
+  - nuget restore
 after_build:
 #ClientUpdater post build commands
  - ps: mkdir "$env:appveyor_build_folder\FinalFiles\$env:configuration\CachedQuickLz"
