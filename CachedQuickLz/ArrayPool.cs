@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CachedQuickLz
 {
-    internal class ArrayPoolBase
+    public class ArrayPoolBase
     {
         protected static readonly ConcurrentBag<int[,]> Level1HashtableBag = new ConcurrentBag<int[,]>();
         protected static readonly ConcurrentBag<int[,]> Level3HashtableBag = new ConcurrentBag<int[,]>();
@@ -44,7 +44,7 @@ namespace CachedQuickLz
         }
     }
 
-    internal class ArrayPool<T>: ArrayPoolBase
+    public class ArrayPool<T>: ArrayPoolBase
     {
         private static readonly ConcurrentDictionary<int, Stack<T[]>> Bins;
 
@@ -61,7 +61,7 @@ namespace CachedQuickLz
             }
         }
 
-        internal static T[] Spawn(int minLength)
+        public static T[] Spawn(int minLength)
         {
             var count = NextPowerOfTwo(minLength);
             var bin = Bins[count];
@@ -69,7 +69,7 @@ namespace CachedQuickLz
             return bin.Count > 0 ? bin.Pop() : new T[count];
         }
 
-        internal static void Recycle(T[] array)
+        public static void Recycle(T[] array)
         {
             Array.Clear(array, 0, array.Length);
             var binKey = NextPowerOfTwo(array.Length + 1) / 2;
