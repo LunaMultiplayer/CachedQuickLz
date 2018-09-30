@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.nuget.org/packages/LunaConfigNode"><img src="https://img.shields.io/nuget/v/LunaConfigNode.svg" alt="Nuget" /></a>
+  <a href="https://www.nuget.org/packages/cachedquicklz"><img src="https://img.shields.io/nuget/v/cachedquicklz.svg" alt="Nuget" /></a>
   <a href="../../releases"><img src="https://img.shields.io/github/release/lunamultiplayer/cachedquicklz.svg" alt="Latest release" /></a>
   <a href="../../releases"><img src="https://img.shields.io/github/downloads/lunamultiplayer/cachedquicklz/total.svg" alt="Total downloads" /></a>
   <a href="../../"><img src="https://img.shields.io/github/search/lunamultiplayer/cachedquicklz/goto.svg" alt="Total hits" /></a>
@@ -12,7 +12,7 @@
 
 ---
 
-# Cached compression/decompression library using the [QuickLz](http://www.quicklz.com/) algorithm
+# Cached compression/decompression with [QuickLz](http://www.quicklz.com/)
 
 *Allows you to compress and decompress with [QuickLz](http://www.quicklz.com/) while keeping low the GC*  
 
@@ -27,7 +27,7 @@
 
 |   Branch   |   Build  |   Tests  |
 | ---------- | -------- | -------- |
-| **master** |[![AppVeyor](https://img.shields.io/appveyor/ci/gavazquez/cachedquicklz/master.svg?logo=appveyor)](https://ci.appveyor.com/project/gavazquez/cachedquicklz/branch/master) | [![AppVeyor Tests](https://img.shields.io/appveyor/tests/gavazquez/lunaconfignode/master.svg?logo=appveyor)](https://ci.appveyor.com/project/gavazquez/lunaconfignode/branch/master/tests)
+| **master** |[![AppVeyor](https://img.shields.io/appveyor/ci/gavazquez/cachedquicklz/master.svg?logo=appveyor)](https://ci.appveyor.com/project/gavazquez/cachedquicklz/branch/master) | [![AppVeyor Tests](https://img.shields.io/appveyor/tests/gavazquez/cachedquicklz/master.svg?logo=appveyor)](https://ci.appveyor.com/project/gavazquez/cachedquicklz/branch/master/tests)
 
 ---
 
