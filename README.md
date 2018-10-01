@@ -14,12 +14,12 @@
 
 # Cached compression/decompression with [QuickLz](http://www.quicklz.com/)
 
-*Allows you to compress and decompress with [QuickLz](http://www.quicklz.com/) while keeping low the GC*  
+*Allows you to compress and decompress with [QuickLz](http://www.quicklz.com/) while keeping low the GC pressure*  
 
 ### Main features:
 
-- Fast compression/decompression by using the [QuickLz](http://www.quicklz.com/) algorithm
-- Uses an array pool to reuse the arrays
+- Fast compression/decompression using [QuickLz](http://www.quicklz.com/) algorithm
+- Includes an array pool to request/recycle arrays in case you want to return them once you've compressed/decompressed their data
 
 ### Usage:
 
@@ -40,6 +40,8 @@ CachedQlz.Decompress(ref data, out var decompressedLength);
 //Now "data" is an array with the decompressed bytes. If you want to check it's length use the variable "length"
 //Do NOT use data.Length! It might be bigger as it came from a cached array!
 ```
+
+### Array pool usage:
 
 ##### Request an array from the pool:
 ```CSharp
