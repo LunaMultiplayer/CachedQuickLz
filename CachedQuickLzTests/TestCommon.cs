@@ -12,5 +12,21 @@ namespace CachedQuickLzTests
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        public static T[] CloneArray<T>(T[] sourceArray)
+        {
+            var clone = new T[sourceArray.Length];
+            Array.Copy(sourceArray, clone, sourceArray.Length);
+
+            return clone;
+        }
+
+        public static T[] CloneArray<T>(T[] sourceArray, int length)
+        {
+            var clone = new T[sourceArray.Length];
+            Array.Copy(sourceArray, clone, length);
+
+            return clone;
+        }
     }
 }

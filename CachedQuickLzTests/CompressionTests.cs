@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CachedQuickLzTests
 {
@@ -53,6 +54,55 @@ namespace CachedQuickLzTests
             var memAfter = GC.GetTotalMemory(true);
 
             Assert.IsTrue(memAfter <= memBefore);
+        }
+
+        [TestMethod]
+        public void CompressThreadSafe()
+        {
+            const int iterations = 1000;
+            const int originalLength = 100000;
+
+            var task1Ok = true;
+            var task1 = Task.Run(() =>
+            {
+                try
+                {
+                    for (var i = 0; i < iterations; i++)
+                    {
+                        var numBytes = originalLength;
+                        var text = Encoding.ASCII.GetBytes(TestCommon.RandomString(numBytes));
+                        CachedQlz.Compress(ref text, ref numBytes);
+                    }
+                }
+                catch (Exception)
+                {
+                    task1Ok = false;
+                }
+            });
+
+            var task2Ok = true;
+            var task2 = Task.Run(() =>
+            {
+                try
+                {
+                    for (var i = 0; i < iterations; i++)
+                    {
+                        var numBytes = originalLength;
+                        var text = Encoding.ASCII.GetBytes(TestCommon.RandomString(numBytes));
+                        CachedQlz.Compress(ref text, ref numBytes);
+                    }
+                }
+                catch (Exception)
+                {
+                    task2Ok = false;
+                }
+            });
+
+            task1.Wait();
+            task2.Wait();
+            
+            Assert.IsTrue(task1Ok);
+            Assert.IsTrue(task2Ok);
         }
     }
 }
