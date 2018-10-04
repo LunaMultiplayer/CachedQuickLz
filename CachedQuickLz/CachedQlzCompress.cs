@@ -13,9 +13,11 @@ namespace CachedQuickLz
         /// <param name="length">Length of the source array. After compression it will contain the compressed array length</param>
         /// <param name="level">Compression level. 1 = faster but less ratio. 3 = slower but higher ratio</param>
         public static void Compress(ref byte[] data, ref int length, int level = 3)
-        {
+        {                        
             if (level != 1 && level != 3)
                 throw new ArgumentException("C# version only supports level 1 and 3");
+
+            if (length == 0) return;
 
             var src = 0;
             var dst = QlzConstants.DefaultHeaderlen + QlzConstants.CwordLen;
@@ -30,19 +32,6 @@ namespace CachedQuickLz
             var lits = 0;
 
             var hashtable = HasthablePool.SpawnHashtable(level == 1 ? 1 : 3);
-
-            if (length == 0)
-            {
-                ArrayPool<byte>.Recycle(destination);
-                ArrayPool<int>.Recycle(cachetable);
-                ArrayPool<byte>.Recycle(hashCounter);
-                ArrayPool<byte>.Recycle(data);
-
-                HasthablePool.RecycleHashtable(hashtable);
-
-                data = new byte[0];
-                return;
-            }
 
             if (src <= lastMatchstart)
                 fetch = data[src] | (data[src + 1] << 8) | (data[src + 2] << 16);
