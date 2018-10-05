@@ -3,16 +3,29 @@ using System.Collections.Concurrent;
 
 namespace CachedQuickLz
 {
-    public class ArrayPool<T>
+    public class ArrayPool<T> where T : struct  //Value types only!
     {
         private static readonly ConcurrentDictionary<int, ConcurrentStack<T[]>> Bins;
 
+        public static int Size
+        {
+            get
+            {
+                var result = 0;
+                foreach (var bin in Bins.Values)
+                {
+                    foreach (var array in bin)
+                    {
+                        result += array.Length;
+                    }
+                }
+                return result;
+            }
+        }
+
         static ArrayPool()
         {
-            Bins = new ConcurrentDictionary<int, ConcurrentStack<T[]>>
-            {
-                [0] = new ConcurrentStack<T[]>()
-            };
+            Bins = new ConcurrentDictionary<int, ConcurrentStack<T[]>>();
 
             for (var i = 0; i < 32; i++)
             {
@@ -28,15 +41,19 @@ namespace CachedQuickLz
 
         internal static void Recycle(T[] array)
         {
+            if (array.Length != NextPowerOfTwo(array.Length)) throw new InvalidOperationException("Trying to recycle an array that doesn't fit a bin. Memory leak. Please use arrays made with ArrayPool<T>.Spawn(int).");
+
             Array.Clear(array, 0, array.Length);
-            var binKey = NextPowerOfTwo(array.Length + 1) / 2;
+            var binKey = array.Length;
 
             Bins[binKey].Push(array);
         }
 
         private static int NextPowerOfTwo(int value)
         {
-            var result = value;
+            if (value <= 0) return 1;
+
+            var result = value - 1;
 
             result |= result >> 1;
             result |= result >> 2;
