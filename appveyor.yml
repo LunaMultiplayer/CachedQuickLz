@@ -23,7 +23,7 @@ image: Visual Studio 2017
 #---------------------------------#
 
 environment:
-  smallversion: 1.1
+  smallversion: 1.2
   NugetKey:
     secure: tYPzvkyTyLs55bvneeVzag8tp+r3qjFlRbLcllo4g/g96oMBBxhd+p3wzxZHUvgk
 cache:

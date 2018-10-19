@@ -30,6 +30,23 @@ namespace CachedQuickLz
             return source[1];
         }
 
+        /// <summary>
+        /// Returns if the array is compressed or not
+        /// </summary>
+        /// <param name="source">Array with compressed bytes</param>
+        /// <param name="length">Length of the array</param>
+        /// <returns>If the array is compressed with QuickLz or not</returns>
+        public static bool IsCompressed(byte[] source, int length)
+        {
+            var trailEquals = true;
+            for (var i = length - 1; i > length - QlzConstants.QlzTrailLength; i--)
+            {
+                trailEquals &= source[i] == QlzConstants.QlzTrailingBytes[QlzConstants.QlzTrailLength - (length - i)];
+            }
+
+            return trailEquals;
+        }
+
         private static int HeaderLen(IList<byte> source)
         {
             return (source[0] & 2) == 2 ? 9 : 3;
@@ -49,6 +66,14 @@ namespace CachedQuickLz
         {
             for (var j = 0; j < numbytes; j++)
                 a[i + j] = (byte)(value >> (j * 8));
+        }
+
+        private static void WriteTrailingBytes(IList<byte> dst, int length)
+        {
+            for (var i = 0; i < QlzConstants.QlzTrailLength; i++)
+            {
+                dst[length + i] = QlzConstants.QlzTrailingBytes[i];
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace CachedQuickLz
             var dst = QlzConstants.DefaultHeaderlen + QlzConstants.CwordLen;
             var cwordVal = 0x80000000;
             var cwordPtr = QlzConstants.DefaultHeaderlen;
-            var destination = ArrayPool<byte>.Spawn(length + 400);
+            var destination = ArrayPool<byte>.Spawn(length + 500);
             var cachetable = ArrayPool<int>.Spawn(QlzConstants.HashValues);
             var hashCounter = ArrayPool<byte>.Spawn(QlzConstants.HashValues);
             byte[] d2;
@@ -43,8 +43,8 @@ namespace CachedQuickLz
                     if (src > length >> 1 && dst > src - (src >> 5))
                     {
                         var newLength = length + QlzConstants.DefaultHeaderlen;
-                        d2 = ArrayPool<byte>.Spawn(length + QlzConstants.DefaultHeaderlen);
-                        WriteHeader(d2, level, false, length, length + QlzConstants.DefaultHeaderlen);
+                        d2 = ArrayPool<byte>.Spawn(newLength + QlzConstants.QlzTrailLength);
+                        WriteHeader(d2, level, false, length, newLength);
                         Array.Copy(data, 0, d2, QlzConstants.DefaultHeaderlen, length);
 
                         ArrayPool<byte>.Recycle(destination);
@@ -53,8 +53,10 @@ namespace CachedQuickLz
                         ArrayPool<byte>.Recycle(data);
                         HasthablePool.RecycleHashtable(hashtable);
 
+                        WriteTrailingBytes(d2, newLength);
+
                         data = d2;
-                        length = newLength;
+                        length = newLength + QlzConstants.QlzTrailLength;
                         return;
                     }
 
@@ -241,11 +243,12 @@ namespace CachedQuickLz
             HasthablePool.RecycleHashtable(hashtable);
             ArrayPool<byte>.Recycle(data);
 
-            d2 = ArrayPool<byte>.Spawn(dst);
+            d2 = ArrayPool<byte>.Spawn(dst + QlzConstants.DefaultHeaderlen + QlzConstants.QlzTrailLength);
             Array.Copy(destination, d2, dst);
+            WriteTrailingBytes(d2, dst);
             ArrayPool<byte>.Recycle(destination);
 
-            length = dst;
+            length = dst + QlzConstants.QlzTrailLength;
             data = d2;
         }
     }

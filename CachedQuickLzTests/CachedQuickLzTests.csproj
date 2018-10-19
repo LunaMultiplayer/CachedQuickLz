@@ -47,6 +47,7 @@
     <Compile Include="DecompressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestCommon.cs" />
+    <Compile Include="CompressionCheckTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

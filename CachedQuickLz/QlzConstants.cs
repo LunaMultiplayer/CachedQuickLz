@@ -2,6 +2,9 @@
 {
     public class QlzConstants
     {
+        public const int QlzTrailLength = 9;
+        public static readonly byte[] QlzTrailingBytes = { 12, 8, 87, 28, 10, 88, 28, 7, 17 };
+
         public const int QlzVersionMajor = 1;
         public const int QlzVersionMinor = 5;
         public const int QlzVersionRevision = 0;
