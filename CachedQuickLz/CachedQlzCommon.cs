@@ -38,6 +38,9 @@ namespace CachedQuickLz
         /// <returns>If the array is compressed with QuickLz or not</returns>
         public static bool IsCompressed(byte[] source, int length)
         {
+            if (source == null || source.Length < QlzConstants.QlzTrailLength || length < QlzConstants.QlzTrailLength)
+                return false;
+
             var trailEquals = true;
             for (var i = length - 1; i > length - QlzConstants.QlzTrailLength; i--)
             {
