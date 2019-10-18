@@ -24,8 +24,6 @@ image: Visual Studio 2017
 
 environment:
   smallversion: 1.3
-  NugetKey:
-    secure: X4uA9LNtrkPKQlqh1k0kDY8A6a4Ybpx2unP5AABRAHC+LvLzCi7fBCh8hsrmZls8
 cache:
   - packages -> **\packages.config
 assembly_info:
@@ -82,7 +80,7 @@ deploy:
  - provider: NuGet
    server: #NuGet.org
    api_key:
-    secure: tYPzvkyTyLs55bvneeVzag8tp+r3qjFlRbLcllo4g/g96oMBBxhd+p3wzxZHUvgk
+    secure: X4uA9LNtrkPKQlqh1k0kDY8A6a4Ybpx2unP5AABRAHC+LvLzCi7fBCh8hsrmZls8
    skip_symbols: false
    symbol_server: #SymbolSource.org
    artifact: /.*\.nupkg/
