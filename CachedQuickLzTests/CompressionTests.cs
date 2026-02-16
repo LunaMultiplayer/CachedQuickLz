@@ -49,11 +49,17 @@ namespace CachedQuickLzTests
             //"next exponential value of 2", it should reuse the array
             text = Encoding.ASCII.GetBytes(TestCommon.RandomString(numBytes));
 
-            var memBefore = GC.GetTotalMemory(true);
+            // GC.GetAllocatedBytesForCurrentThread is a more precise way to measure allocations than GC.GetTotalMemory.
+            // We expect the second compression to reuse the pooled array, resulting in zero (or very few) allocations.
+            var bytesBefore = GC.GetAllocatedBytesForCurrentThread();
             CachedQlz.Compress(ref text, ref numBytes);
-            var memAfter = GC.GetTotalMemory(true);
+            var bytesAfter = GC.GetAllocatedBytesForCurrentThread();
 
-            Assert.IsTrue(memAfter <= memBefore);
+            var allocatedBytes = bytesAfter - bytesBefore;
+
+            // Assert that no significant memory was allocated, confirming the buffer was reused.
+            // A small tolerance can be added if needed, but zero is ideal.
+            Assert.IsTrue(allocatedBytes <= 128, $"Expected no more than 128 bytes allocated, but {allocatedBytes} bytes were allocated.");
         }
 
         [TestMethod]
